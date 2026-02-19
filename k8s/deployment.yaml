@@ -17,7 +17,7 @@ spec:
       containers:
       - name: iris-classifier
         # POZOR: Nahraď 'tvoje-meno' svojím GitHub loginom
-        image: ghcr.io/tvoje-meno/iris_classifier:latest
+        image: ghcr.io/vetronn/iris_classifier:latest
         ports:
         - containerPort: 3000
         imagePullPolicy: Always # Dôležité: Vždy si stiahne čerstvý obraz z GHCR
