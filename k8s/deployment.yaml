@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-classifier
+  labels:
+    run: iris-app
+spec:
+  replicas: 1  # Tu môžeš neskôr zvýšiť počet na 3 pre lepšie RPS
+  selector:
+    matchLabels:
+      run: iris-app
+  template:
+    metadata:
+      labels:
+        run: iris-app
+    spec:
+      containers:
+      - name: iris-classifier
+        # POZOR: Nahraď 'tvoje-meno' svojím GitHub loginom
+        image: ghcr.io/tvoje-meno/iris_classifier:latest
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always # Dôležité: Vždy si stiahne čerstvý obraz z GHCR
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-service
+spec:
+  selector:
+    run: iris-app
+  ports:
+    - protocol: TCP
+      port: 80         # Navonok sa bude tváriť ako port 80
+      targetPort: 3000 # Interne v kontajneri Bento beží na 3000
+  type: LoadBalancer   # k3d ti automaticky pridelí IP adresu
