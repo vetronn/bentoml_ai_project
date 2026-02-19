@@ -31,6 +31,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Train and Save Model
+        run: |
+          # Spustí tvoj python skript, ktorý končí príkazom bentoml.sklearn.save_model("iris_clf", model)
+          python.exe .\train_and_save.py
+
       - name: Build Bento and Containerize
         run: |
           # 1. Build bento (v GitHub runneri musíme model znova "vytvoriť" alebo ho mať v repo)
