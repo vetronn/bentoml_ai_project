@@ -34,7 +34,7 @@ jobs:
       - name: Train and Save Model
         run: |
           # Spustí tvoj python skript, ktorý končí príkazom bentoml.sklearn.save_model("iris_clf", model)
-          python .\train_and_save.py
+          python train_and_save.py
 
       - name: Build Bento and Containerize
         run: |
