@@ -1,0 +1,46 @@
+name: Build and Push BentoML to GHCR
+
+on:
+  push:
+    branches: [ "main" ] # Spustí sa pri každom pushi do main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # Dôležité pre zápis do GHCR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install bentoml scikit-learn numpy pandas
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Bento and Containerize
+        run: |
+          # 1. Build bento (v GitHub runneri musíme model znova "vytvoriť" alebo ho mať v repo)
+          # Predpokladáme, že tvoj train skript beží rýchlo, alebo model sťahuješ
+          bentoml build
+          
+          # 2. Containerize s tagom pre GHCR
+          # Formát: ghcr.io/tvoje_meno/iris_classifier:latest
+          IMAGE_TAG=ghcr.io/${{ github.repository_owner }}/iris_classifier:latest
+          bentoml containerize iris_classifier:latest -t $IMAGE_TAG
+          
+          # 3. Push do registra
+          docker push $IMAGE_TAG

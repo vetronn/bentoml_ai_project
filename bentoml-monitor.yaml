@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-app-metrics
+  labels:
+    run: iris-app  # Musí sedieť s ServiceMonitorom
+spec:
+  ports:
+  - name: metrics
+    port: 3000
+    targetPort: 3000
+  selector:
+    run: iris-app  # TENTO LABEL hľadá váš bežiaci Pod iris-app
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: bentoml-monitor
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      run: iris-app # ServiceMonitor nájde Service s týmto labelom
+  endpoints:
+  - port: metrics
+    path: /metrics
+    interval: 15s

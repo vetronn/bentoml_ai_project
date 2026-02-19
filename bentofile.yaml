@@ -1,0 +1,13 @@
+service: "service:IrisService"  # Odkaz na triedu v service.py
+
+labels:
+  project: iris_classifier
+
+include:
+  - "*.py"
+
+python:
+  packages:
+    - scikit-learn
+    - numpy
+    - pandas
